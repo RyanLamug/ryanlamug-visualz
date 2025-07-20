@@ -1,0 +1,90 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, ul, li, form, input, textarea, button {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: #f2f2f2;
+  color: #111;
+  line-height: 1.5;
+}
+
+.site-header {
+  background-color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid #000;
+}
+
+.logo {
+  font-family: 'Anton', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.main-nav a {
+  margin-left: 1rem;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.hero {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.hero h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.about, .programs, .contact {
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.programs ul {
+  list-style: square;
+  margin-left: 1.5rem;
+}
+
+.contact form {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact input, .contact textarea {
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  border: 2px solid #000;
+}
+
+.contact button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+}
+
+.site-footer {
+  background-color: #fff;
+  text-align: center;
+  padding: 1rem;
+  border-top: 4px solid #000;
+}
+
+@media (max-width: 600px) {
+  .hero h2 {
+    font-size: 2rem;
+  }
+}
