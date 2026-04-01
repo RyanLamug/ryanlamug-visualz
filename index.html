@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ryan Lamug — Video Editor Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-bg: #FFFFFF;
+      --color-surface: #F5F5F7;
+      --color-surface-2: #E8E8ED;
+      --color-text-primary: #0A0A0A;
+      --color-text-secondary: #6E6E73;
+      --color-accent: #0071E3;
+      --color-border: rgba(0,0,0,0.08);
+
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+
+      --space-1: 12px;
+      --space-2: 20px;
+      --space-3: 32px;
+      --space-4: 48px;
+      --space-5: 72px;
+
+      --dur-fast: .28s;
+      --dur-mid: .42s;
+      --dur-slow: .92s;
+      --ease-premium: cubic-bezier(.22,1,.36,1);
+
+      --cursor-dot: 12px;
+      --cursor-hover: 40px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--color-text-primary);
+      background: var(--color-bg);
+      letter-spacing: -.02em;
+      overflow-x: hidden;
+    }
+
+    .cursor {
+      position: fixed;
+      width: var(--cursor-dot);
+      height: var(--cursor-dot);
+      border-radius: 50%;
+      background: #0A0A0A;
+      mix-blend-mode: difference;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+
+    .wrap { max-width: 1320px; margin: 0 auto; padding: 24px 32px 64px; }
+
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 18px; margin-bottom: var(--space-4);
+    }
+    .brand { font-size: 1.1rem; font-weight: 600; }
+    .brand span { color: var(--color-text-secondary); font-weight: 400; margin-left: 8px; }
+
+    .contact-btn {
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      border-radius: 999px;
+      padding: 10px 16px;
+      text-decoration: none;
+      color: inherit;
+      font-size: .9rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+
+    .hero-card,
+    .panel,
+    .work-card,
+    .stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-card { padding: 34px; }
+    .kicker { color: var(--color-accent); font-size: .84rem; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .08em; }
+    .headline { font-size: clamp(2.2rem, 4vw, 4.2rem); font-weight: 500; line-height: 1.02; margin-bottom: 18px; }
+    .headline b { font-weight: 800; }
+    .sub { color: var(--color-text-secondary); max-width: 58ch; line-height: 1.6; }
+
+    .hero-meta { display: grid; gap: 14px; padding: 26px; }
+    .meta-item { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 18px; }
+    .meta-label { color: var(--color-text-secondary); font-size: .82rem; margin-bottom: 10px; }
+    .meta-value { font-size: 1.28rem; font-weight: 700; }
+
+    .section { margin-bottom: var(--space-5); }
+    .section-title { font-size: clamp(1.5rem, 2.2vw, 2.4rem); font-weight: 500; margin-bottom: 10px; }
+    .section-copy { color: var(--color-text-secondary); margin-bottom: 24px; }
+
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .work-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+    }
+
+    .work-card .inner {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      transition: transform var(--dur-fast) var(--ease-premium);
+    }
+
+    .work-card.portrait { grid-column: span 3; aspect-ratio: 9/16; }
+    .work-card.landscape { grid-column: span 6; aspect-ratio: 16/9; }
+
+    .thumb {
+      width: calc(100% - 24px);
+      height: calc(100% - 24px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.65);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background: #dceadf;
+    }
+    .landscape .thumb { background: #e8e1cf; }
+    .portrait:nth-child(even) .thumb { background: #d8e5f6; }
+
+    .play {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,.8);
+      backdrop-filter: blur(4px);
+      display: grid; place-items: center;
+    }
+    .play::before {
+      content: "";
+      border-left: 13px solid #0A0A0A;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      margin-left: 3px;
+    }
+
+    .chip {
+      position: absolute; left: 12px; bottom: 12px;
+      background: rgba(255,255,255,.8);
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 500;
+      padding: 6px 10px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 16px;
+    }
+    .stat { padding: 18px; border-radius: var(--radius-lg); }
+    .stat-label { font-size: .8rem; color: var(--color-text-secondary); margin-bottom: 10px; }
+    .stat-value { font-size: clamp(1.35rem, 2.2vw, 2.2rem); font-weight: 800; }
+
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .panel { padding: 24px; border-radius: var(--radius-lg); }
+    .list { list-style: none; display: grid; gap: 12px; }
+    .list li {
+      border-top: 1px solid var(--color-border);
+      padding-top: 12px;
+      color: var(--color-text-secondary);
+    }
+
+    .lightbox {
+      position: fixed; inset: 0; display: none;
+      align-items: center; justify-content: center;
+      z-index: 6000; padding: 32px;
+    }
+    .lightbox.open { display: flex; }
+    .lb-bg {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+    }
+    .lb-card {
+      position: relative;
+      width: min(1100px, 92vw);
+      aspect-ratio: 16/9;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.2);
+      background: #0f172a;
+    }
+    .lb-title { position: absolute; left: 18px; bottom: 16px; color: #fff; font-size: .92rem; }
+
+    @media (max-width: 1080px) {
+      .hero { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .works-grid { grid-template-columns: repeat(2,1fr); }
+      .work-card.portrait, .work-card.landscape { grid-column: span 1; }
+      .about { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .cursor { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="nav" id="nav">
+      <div class="brand">Ryan Lamug <span>Video Editor · Philippines</span></div>
+      <a href="mailto:ryanlamug@gmail.com" class="contact-btn interactive">Book a project</a>
+    </header>
+
+    <section class="hero">
+      <article class="hero-card" id="heroCard">
+        <p class="kicker">Portfolio 2026</p>
+        <h1 class="headline">I craft <b>short-form edits</b> that feel premium, fast, and built for attention.</h1>
+        <p class="sub">Hi, I’m Ryan Lamug, a Philippines-based video editor with 3 years of professional experience. I specialize in shortform content, talking heads, personal brand storytelling, and UGC edits made for growth.</p>
+      </article>
+
+      <aside class="hero-meta" id="heroMeta">
+        <div class="meta-item interactive">
+          <p class="meta-label">Experience</p>
+          <p class="meta-value" data-counter="3" data-suffix=" Years">0</p>
+        </div>
+        <div class="meta-item interactive">
+          <p class="meta-label">Primary Formats</p>
+          <p class="meta-value">9:16 + 16:9</p>
+        </div>
+        <div class="meta-item interactive">
+          <p class="meta-label">Based in</p>
+          <p class="meta-value">Philippines</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Featured Work</h2>
+      <p class="section-copy">Phone-frame vertical reels and cinema-frame landscape cuts in one gallery.</p>
+      <div class="works-grid" id="workGrid">
+        <article class="work-card portrait interactive" data-title="UGC Beauty Hook · 18s"><div class="inner"><div class="thumb"><div class="play"></div><span class="chip">9:16 · UGC</span></div></div></article>
+        <article class="work-card landscape interactive" data-title="Personal Brand Teaser · 45s"><div class="inner"><div class="thumb"><div class="play"></div><span class="chip">16:9 · Personal Brand</span></div></div></article>
+        <article class="work-card portrait interactive" data-title="Talking Head Sales Clip · 30s"><div class="inner"><div class="thumb"><div class="play"></div><span class="chip">9:16 · Talking Head</span></div></div></article>
+        <article class="work-card landscape interactive" data-title="Campaign Recap · 60s"><div class="inner"><div class="thumb"><div class="play"></div><span class="chip">16:9 · Informative</span></div></div></article>
+      </div>
+    </section>
+
+    <section class="section stats" id="statsBar">
+      <article class="stat interactive"><p class="stat-label">Years of Experience</p><p class="stat-value" data-counter="3">0</p></article>
+      <article class="stat interactive"><p class="stat-label">Core Niche</p><p class="stat-value">Shortform</p></article>
+      <article class="stat interactive"><p class="stat-label">Best Performing Style</p><p class="stat-value">Talking Heads</p></article>
+      <article class="stat interactive"><p class="stat-label">Secondary Focus</p><p class="stat-value">UGC</p></article>
+    </section>
+
+    <section class="section about">
+      <article class="panel">
+        <h3 class="section-title" style="font-size:1.5rem;">Specializations</h3>
+        <ul class="list">
+          <li>Shortform reels optimized for first-3-second retention.</li>
+          <li>Talking-head edits with pacing, jump-cuts, and clean subtitle rhythm.</li>
+          <li>Personal brand storytelling for coaches, creators, and founders.</li>
+          <li>UGC ad edits structured for paid social conversion.</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h3 class="section-title" style="font-size:1.5rem;">Creative Direction</h3>
+        <ul class="list">
+          <li>White Apple-like visual tone with thin lines and generous spacing.</li>
+          <li>Antigravity-inspired micro interactions: magnetic cards and weighted motion.</li>
+          <li>No loud gradients, no noisy effects, just premium clarity.</li>
+          <li>Motion respects <code>prefers-reduced-motion</code> accessibility settings.</li>
+        </ul>
+      </article>
+    </section>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lb-bg" id="lbBg"></div>
+    <div class="lb-card" id="lbCard">
+      <div class="thumb" style="width:100%;height:100%;border-radius:0;background:#111827;"><div class="play"></div></div>
+      <p class="lb-title" id="lbTitle"></p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+  <script>
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cursor = document.querySelector('.cursor');
+    const interactive = document.querySelectorAll('.interactive');
+    const cards = document.querySelectorAll('.work-card, .meta-item, .stat');
+    const counters = document.querySelectorAll('[data-counter]');
+
+    const lightbox = document.getElementById('lightbox');
+    const lbBg = document.getElementById('lbBg');
+    const lbCard = document.getElementById('lbCard');
+    const lbTitle = document.getElementById('lbTitle');
+
+    if (!reducedMotion) {
+      gsap.registerPlugin(ScrollTrigger, CustomEase);
+      CustomEase.create('counterEase', 'M0,0 C0.12,0.84 0.22,1.18 0.42,1.08 0.62,0.98 0.78,1 1,1');
+
+      gsap.set(cursor, { autoAlpha: 1 });
+      window.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.12, ease: 'power2.out' });
+      });
+
+      interactive.forEach(el => {
+        el.addEventListener('mouseenter', () => gsap.to(cursor, { width: 'var(--cursor-hover)', height: 'var(--cursor-hover)', opacity: .6, duration: .4, ease: 'power2.out' }));
+        el.addEventListener('mouseleave', () => gsap.to(cursor, { width: 'var(--cursor-dot)', height: 'var(--cursor-dot)', opacity: 1, duration: .4, ease: 'power2.out' }));
+      });
+
+      cards.forEach(card => {
+        const inner = card.querySelector('.inner') || card;
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+          const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+          const mx = dx * 4;
+          const my = dy * 4;
+          gsap.to(card, { x: mx, y: my, boxShadow: `${-mx * 3}px ${-my * 3}px 24px rgba(10,10,10,.12)`, duration: .3, ease: 'power2.out' });
+          gsap.to(inner, { scale: 1.02, duration: .3, ease: 'power2.out' });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { x: 0, y: 0, boxShadow: 'none', duration: .3, ease: 'power2.out' });
+          gsap.to(inner, { scale: 1, duration: .3, ease: 'power2.out' });
+        });
+      });
+
+      gsap.timeline()
+        .from('body', { opacity: 0, duration: .45 }, 0)
+        .from('#nav', { y: -26, opacity: 0, duration: .55 }, .1)
+        .from('#heroCard, #heroMeta .meta-item', { y: 42, opacity: 0, duration: .75, stagger: .08, ease: 'back.out(1.2)' }, .2)
+        .from('.work-card', { y: 42, opacity: 0, duration: .75, stagger: .08, ease: 'back.out(1.2)' }, .3)
+        .add(animateCounters, .4)
+        .from('#statsBar .stat', { x: -24, opacity: 0, duration: .6, stagger: .08 }, .6);
+    } else {
+      cursor.style.display = 'none';
+      animateCounters();
+    }
+
+    function animateCounters() {
+      counters.forEach(counter => {
+        const target = parseFloat(counter.dataset.counter);
+        const suffix = counter.dataset.suffix || '';
+        if (reducedMotion) {
+          counter.textContent = Math.round(target) + suffix;
+          return;
+        }
+        const state = { value: 0 };
+        gsap.to(state, {
+          value: target,
+          duration: 1.4,
+          ease: 'counterEase',
+          onUpdate: () => { counter.textContent = Math.round(state.value) + suffix; }
+        });
+      });
+    }
+
+    let activeOrigin = null;
+    document.querySelectorAll('.work-card').forEach(card => {
+      card.addEventListener('click', () => {
+        activeOrigin = card;
+        lbTitle.textContent = card.dataset.title || 'Selected edit';
+        const start = card.getBoundingClientRect();
+
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+
+        const end = lbCard.getBoundingClientRect();
+        const dx = start.left - end.left;
+        const dy = start.top - end.top;
+        const sx = start.width / end.width;
+        const sy = start.height / end.height;
+
+        gsap.set(lbCard, { x: dx, y: dy, scaleX: sx, scaleY: sy, transformOrigin: 'top left' });
+        gsap.timeline()
+          .to(lbBg, { opacity: 1, duration: .35, ease: 'power2.out' })
+          .to(lbCard, { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: .7, ease: 'power3.out' }, 0);
+      });
+    });
+
+    function closeLightbox() {
+      if (!activeOrigin) return;
+      const start = activeOrigin.getBoundingClientRect();
+      const end = lbCard.getBoundingClientRect();
+      const dx = start.left - end.left;
+      const dy = start.top - end.top;
+      const sx = start.width / end.width;
+      const sy = start.height / end.height;
+
+      gsap.timeline({ onComplete: () => {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        activeOrigin = null;
+      }})
+      .to(lbBg, { opacity: 0, duration: .22 })
+      .to(lbCard, { x: dx, y: dy, scaleX: sx, scaleY: sy, duration: .52, ease: 'power3.inOut' }, 0);
+    }
+
+    lbBg.addEventListener('click', closeLightbox);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+</body>
+</html>
